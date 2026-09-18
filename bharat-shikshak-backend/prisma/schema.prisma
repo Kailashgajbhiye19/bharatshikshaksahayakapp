@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TEACHER
+  ADMIN
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+model User {
+  id           String   @id @default(uuid())
+  employeeId   String   @unique
+  email        String?  @unique
+  passwordHash String
+  fullName     String
+  role         Role     @default(TEACHER)
+  schoolName   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  classes          Class[]
+  markedAttendance AttendanceRecord[] @relation("MarkedBy")
+
+  @@index([employeeId])
+}
+
+model Class {
+  id        String   @id @default(uuid())
+  grade     String
+  subject   String
+  teacherId String
+  teacher   User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  students  Student[]
+  resources Resource[]
+
+  @@unique([grade, subject, teacherId])
+  @@index([teacherId])
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  rollNo    Int
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  attendanceRecords AttendanceRecord[]
+
+  @@unique([classId, rollNo])
+  @@index([classId])
+}
+
+model AttendanceRecord {
+  id         String           @id @default(uuid())
+  date       DateTime         @default(now())
+  status     AttendanceStatus
+  studentId  String
+  student    Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  markedById String
+  markedBy   User             @relation("MarkedBy", fields: [markedById], references: [id])
+  syncedAt   DateTime         @default(now())
+
+  @@unique([studentId, date])
+  @@index([date])
+  @@index([studentId])
+}
+
+model Resource {
+  id         String   @id @default(uuid())
+  title      String
+  fileUrl    String
+  fileType   String
+  classId    String
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  uploadedAt DateTime @default(now())
+
+  @@index([classId])
+}

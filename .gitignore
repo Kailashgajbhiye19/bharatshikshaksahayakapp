@@ -1,0 +1,22 @@
+# Flutter generated files
+**/.dart_tool/
+**/build/
+**/.flutter-plugins-dependencies
+**/ephemeral/
+**/local.properties
+school_lookup_app/.idea/
+
+# Node generated files and secrets
+bharat-shikshak-backend/node_modules/
+bharat-shikshak-backend/dist/
+bharat-shikshak-backend/.env
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Local repository metadata backups
+school_lookup_app/.git.flutter-backup/
+bharat-shikshak-backend/.git.backend-backup/
