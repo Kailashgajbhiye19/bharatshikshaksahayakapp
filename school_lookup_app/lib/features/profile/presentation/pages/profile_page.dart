@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/localization/app_localization.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
+import '../providers/profile_provider.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
+import '../../domain/models/user_profile.dart';
+import './edit_profile_page.dart';
 
 /// [ProfilePage] displays teacher account information and settings.
 class ProfilePage extends ConsumerWidget {
@@ -13,6 +17,7 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = ref.watch(l10nProvider);
+    final profile = ref.watch(profileProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.tr('profile')), centerTitle: true),
@@ -21,17 +26,13 @@ class ProfilePage extends ConsumerWidget {
         child: Column(
           children: [
             // --- User Header ---
-            _buildProfileHeader(),
+            _buildProfileHeader(profile),
             const SizedBox(height: 32),
             
             // --- Contact Information ---
-            // -----------------------------------------------------------------
-            // BACKEND INTEGRATION POINT: 
-            // Replace hardcoded values with data from UserProvider.
-            // -----------------------------------------------------------------
-            const _ProfileTile(icon: Icons.school_outlined, title: "Govt. Senior Secondary School", subtitle: "Jodhpur, Rajasthan"),
-            const _ProfileTile(icon: Icons.email_outlined, title: "savita.sharma@edu.gov.in", subtitle: "Primary Email"),
-            const _ProfileTile(icon: Icons.phone_android_outlined, title: "+91 98765 43210", subtitle: "Contact Number"),
+            _ProfileTile(icon: Icons.school_outlined, title: profile.schoolName, subtitle: "Assigned School"),
+            _ProfileTile(icon: Icons.email_outlined, title: profile.email, subtitle: "Primary Email"),
+            _ProfileTile(icon: Icons.badge_outlined, title: profile.employeeId, subtitle: "Teacher ID"),
             
             const SizedBox(height: 20),
             const Divider(),
@@ -45,17 +46,17 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader() {
-    return const Column(
+  Widget _buildProfileHeader(UserProfile profile) {
+    return Column(
       children: [
-        CircleAvatar(
+        const CircleAvatar(
           radius: 60,
           backgroundColor: AppColors.primaryOrange,
           child: Icon(Icons.person, color: Colors.white, size: 60),
         ),
-        SizedBox(height: 16),
-        Text("Mrs. Savita Sharma", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        Text("Senior Science Teacher", style: TextStyle(color: AppColors.textGrey)),
+        const SizedBox(height: 16),
+        Text(profile.fullName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        const Text("Senior Science Teacher", style: TextStyle(color: AppColors.textGrey)),
       ],
     );
   }
@@ -64,20 +65,32 @@ class ProfilePage extends ConsumerWidget {
     return Column(
       children: [
         ListTile(
-          leading: const Icon(Icons.translate),
-          title: Text(l10n.tr('language')),
+          leading: const Icon(Icons.edit_outlined),
+          title: const Text("Edit Profile"),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => context.go('/onboarding'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EditProfilePage()),
+            );
+          },
         ),
         ListTile(
           leading: const Icon(Icons.settings_outlined),
           title: Text(l10n.tr('settings')),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Settings coming soon")),
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
             );
           },
+        ),
+        ListTile(
+          leading: const Icon(Icons.translate),
+          title: Text(l10n.tr('language')),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => context.go('/onboarding'),
         ),
         ListTile(
           leading: const Icon(Icons.help_outline),
