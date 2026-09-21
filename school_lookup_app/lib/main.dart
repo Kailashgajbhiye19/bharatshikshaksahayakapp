@@ -16,6 +16,7 @@ import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/library/presentation/pages/library_page.dart';
 import 'features/scan/domain/models/scan_result.dart';
 import 'features/scan/data/repositories/scan_repository.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
 import 'core/util/app_logger.dart';
 
 void main() async {
@@ -40,14 +41,18 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    
     return MaterialApp.router(
       title: 'Bharat Shikshak Sahayak',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );

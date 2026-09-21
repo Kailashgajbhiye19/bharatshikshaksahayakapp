@@ -13,6 +13,8 @@ import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../scan/presentation/pages/scan_center_page.dart';
 import '../../../history/presentation/pages/history_page.dart';
 import '../../../../features/sync/domain/services/sync_service.dart';
+import '../../../../features/profile/presentation/providers/profile_provider.dart';
+import '../../../../features/profile/domain/models/user_profile.dart';
 
 /// [HomePage] is the main navigation hub of the application.
 /// It uses a [BottomNavigationBar] to switch between core features.
@@ -53,10 +55,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = ref.watch(l10nProvider);
+    final profile = ref.watch(profileProvider);
 
     return Scaffold(
       // --- Side Navigation Menu ---
-      drawer: _buildSideDrawer(context, l10n),
+      drawer: _buildSideDrawer(context, l10n, profile),
       
       appBar: AppBar(
         title: const Text(
@@ -102,28 +105,47 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _buildSideDrawer(BuildContext context, AppLocalization l10n) {
+  Widget _buildSideDrawer(BuildContext context, AppLocalization l10n, UserProfile profile) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // -------------------------------------------------------------------
-          // BACKEND INTEGRATION POINT: 
-          // Bind teacher profile data (Name, Email, Image) from UserProvider.
-          // -------------------------------------------------------------------
           DrawerHeader(
             decoration: const BoxDecoration(color: AppColors.primaryOrange),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, color: AppColors.primaryOrange),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.person, color: AppColors.primaryOrange, size: 30),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        profile.fullName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Text(l10n.tr('teacher'), style: const TextStyle(color: Colors.white, fontSize: 18)),
-                const Text('teacher@example.com', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                const SizedBox(height: 12),
+                Text(
+                  profile.designation,
+                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  profile.email,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
               ],
             ),
           ),

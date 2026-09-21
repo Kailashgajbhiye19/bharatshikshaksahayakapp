@@ -56,7 +56,7 @@ class ProfilePage extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         Text(profile.fullName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        const Text("Senior Science Teacher", style: TextStyle(color: AppColors.textGrey)),
+        Text(profile.designation, style: const TextStyle(color: AppColors.textGrey)),
       ],
     );
   }

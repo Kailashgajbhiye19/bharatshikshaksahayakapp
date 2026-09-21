@@ -16,6 +16,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   late TextEditingController _emailController;
   late TextEditingController _idController;
   late TextEditingController _schoolController;
+  late TextEditingController _designationController;
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     _emailController = TextEditingController(text: profile.email);
     _idController = TextEditingController(text: profile.employeeId);
     _schoolController = TextEditingController(text: profile.schoolName);
+    _designationController = TextEditingController(text: profile.designation);
   }
 
   @override
@@ -33,6 +35,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     _emailController.dispose();
     _idController.dispose();
     _schoolController.dispose();
+    _designationController.dispose();
     super.dispose();
   }
 
@@ -43,6 +46,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         email: _emailController.text,
         employeeId: _idController.text,
         schoolName: _schoolController.text,
+        designation: _designationController.text,
       );
       ref.read(profileProvider.notifier).updateProfile(updatedProfile);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,6 +82,8 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
               _buildTextField("Email Address", _emailController, Icons.email_outlined),
               const SizedBox(height: 16),
               _buildTextField("Teacher ID", _idController, Icons.badge_outlined),
+              const SizedBox(height: 16),
+              _buildTextField("Designation", _designationController, Icons.work_outline),
               const SizedBox(height: 16),
               _buildTextField("School Name", _schoolController, Icons.school_outlined),
               const SizedBox(height: 32),

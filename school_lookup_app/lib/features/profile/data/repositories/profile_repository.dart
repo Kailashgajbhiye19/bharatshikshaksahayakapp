@@ -11,6 +11,7 @@ class ProfileRepository {
       email: _box.get('userEmail', defaultValue: 'teacher@example.com'),
       employeeId: _box.get('employeeId', defaultValue: 'N/A'),
       schoolName: _box.get('schoolName', defaultValue: 'Govt. School'),
+      designation: _box.get('designation', defaultValue: 'Senior Teacher'),
     );
   }
 
@@ -19,5 +20,6 @@ class ProfileRepository {
     await _box.put('userEmail', profile.email);
     await _box.put('employeeId', profile.employeeId);
     await _box.put('schoolName', profile.schoolName);
+    await _box.put('designation', profile.designation);
   }
 }
