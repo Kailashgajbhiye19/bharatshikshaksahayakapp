@@ -107,20 +107,41 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget _buildSideDrawer(BuildContext context, AppLocalization l10n, UserProfile profile) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      backgroundColor: Colors.white,
+      child: Column(
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: AppColors.primaryOrange),
+          // --- Enhanced Drawer Header ---
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.primaryOrange,
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(40),
+              ),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.person, color: AppColors.primaryOrange, size: 30),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          )
+                        ],
+                      ),
+                      child: const CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person, color: AppColors.primaryOrange, size: 40),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -128,7 +149,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         profile.fullName,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 2,
@@ -137,52 +158,110 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  profile.designation,
-                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    profile.designation.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
                 ),
-                Text(
-                  profile.email,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.email_outlined, color: Colors.white70, size: 14),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        profile.email,
+                        style: const TextStyle(color: Colors.white70, fontSize: 13),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: Text(l10n.tr('home')),
-            onTap: () {
-              setState(() => _currentIndex = 0);
-              Navigator.pop(context);
-            },
+
+          // --- Drawer Menu Items ---
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+              children: [
+                _DrawerItem(
+                  icon: Icons.home_rounded,
+                  label: l10n.tr('home'),
+                  isSelected: _currentIndex == 0,
+                  onTap: () {
+                    setState(() => _currentIndex = 0);
+                    Navigator.pop(context);
+                  },
+                ),
+                _DrawerItem(
+                  icon: Icons.menu_book_rounded,
+                  label: l10n.tr('library'),
+                  isSelected: _currentIndex == 1,
+                  onTap: () {
+                    setState(() => _currentIndex = 1);
+                    Navigator.pop(context);
+                  },
+                ),
+                _DrawerItem(
+                  icon: Icons.history_rounded,
+                  label: l10n.tr('history'),
+                  isSelected: _currentIndex == 3,
+                  onTap: () {
+                    setState(() => _currentIndex = 3);
+                    Navigator.pop(context);
+                  },
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Divider(thickness: 1, height: 1),
+                ),
+                _DrawerItem(
+                  icon: Icons.settings_rounded,
+                  label: l10n.tr('settings'),
+                  isSelected: false,
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to settings page
+                  },
+                ),
+                _DrawerItem(
+                  icon: Icons.help_outline_rounded,
+                  label: "Help & Support",
+                  isSelected: false,
+                  onTap: () => Navigator.pop(context),
+                ),
+                const SizedBox(height: 20),
+                _DrawerItem(
+                  icon: Icons.logout_rounded,
+                  label: l10n.tr('logout'),
+                  isDestructive: true,
+                  onTap: () => _showLogoutDialog(context, l10n),
+                ),
+              ],
+            ),
           ),
-          ListTile(
-            leading: const Icon(Icons.menu_book),
-            title: Text(l10n.tr('library')),
-            onTap: () {
-              setState(() => _currentIndex = 1);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.history),
-            title: Text(l10n.tr('history')),
-            onTap: () {
-              setState(() => _currentIndex = 3);
-              Navigator.pop(context);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(l10n.tr('settings')),
-            onTap: () => Navigator.pop(context),
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: Text(l10n.tr('logout')),
-            onTap: () => _showLogoutDialog(context, l10n),
+          
+          // Bottom Branding
+          const Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              "v1.0.0",
+              style: TextStyle(color: AppColors.textGrey, fontSize: 10),
+            ),
           ),
         ],
       ),
@@ -208,6 +287,51 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Text(l10n.tr('logout'), style: const TextStyle(color: Colors.red)),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isSelected;
+  final bool isDestructive;
+
+  const _DrawerItem({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.isSelected = false,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDestructive 
+        ? Colors.red 
+        : (isSelected ? AppColors.primaryOrange : AppColors.textDark);
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.primaryOrange.withValues(alpha: 0.1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        leading: Icon(icon, color: color, size: 24),
+        title: Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            fontSize: 15,
+          ),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       ),
     );
   }
