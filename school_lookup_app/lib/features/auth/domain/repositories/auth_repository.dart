@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/api_client.dart';
 
@@ -21,6 +22,8 @@ class AuthRepository {
       await _saveSession(response.data!);
       return null;
     } on DioException catch (error) {
+      bool hasConnection = await InternetConnectionChecker().hasConnection;
+
       if (error.type == DioExceptionType.connectionError || error.type == DioExceptionType.connectionTimeout) {
         // --- OFFLINE LOGIN LOGIC ---
         // Check if we have locally stored credentials that match.
@@ -33,6 +36,10 @@ class AuthRepository {
           // In a real app, we should also verify the password (e.g. against a hashed copy stored locally).
           // For this requirement, we will allow offline entry if they've logged in before.
           return null; 
+        }
+
+        if (hasConnection) {
+          return AuthFailure("Cannot reach the server. Please verify the API URL or server status.");
         }
       }
       return _failureFromDio(error);

@@ -58,6 +58,28 @@ class _HomePageState extends ConsumerState<HomePage> {
       // --- Side Navigation Menu ---
       drawer: _buildSideDrawer(context, l10n),
       
+      appBar: AppBar(
+        title: const Text(
+          'Bharat Shikshak Sahayak',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.primaryOrange,
+        elevation: 0.5,
+        actions: [
+          IconButton(
+            icon: const CircleAvatar(
+              radius: 14,
+              backgroundColor: AppColors.primaryOrange,
+              child: Icon(Icons.person, size: 18, color: Colors.white),
+            ),
+            onPressed: () => setState(() => _currentIndex = 4),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+
       // --- Active Page ---
       body: _pages[_currentIndex],
 
@@ -192,8 +214,6 @@ class _DashboardTab extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTopBar(context),
-            const SizedBox(height: 20),
             _buildWelcomeText(l10n),
             const SizedBox(height: 20),
             _buildHeroCard(l10n),
@@ -208,27 +228,6 @@ class _DashboardTab extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTopBar(BuildContext context) {
-    return Row(
-      children: [
-        Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: onProfileTap,
-          child: const CircleAvatar(
-            backgroundColor: AppColors.primaryOrange,
-            child: Icon(Icons.person, color: Colors.white),
-          ),
-        ),
-      ],
     );
   }
 
@@ -480,7 +479,7 @@ class _AnalysisToolCardState extends State<_AnalysisToolCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Data Science matching completed!", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text("Topic verification completed!", style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Text("The uploaded image has been compared with '$_selectedBook'."),
               const SizedBox(height: 10),
@@ -518,7 +517,7 @@ class _AnalysisToolCardState extends State<_AnalysisToolCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("AI Topic Verification", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkTeal)),
+            const Text("Curriculum Matcher", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkTeal)),
             const SizedBox(height: 4),
             const Text("Upload notes to verify against curriculum", style: TextStyle(fontSize: 12, color: Colors.grey)),
             const Divider(height: 30),
@@ -582,7 +581,7 @@ class _AnalysisToolCardState extends State<_AnalysisToolCard> {
                   backgroundColor: AppColors.darkTeal,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: const Text("RUN DATA SCIENCE ANALYSIS", style: TextStyle(fontSize: 12)),
+                child: const Text("MATCH WITH BOOK CONTENT", style: TextStyle(fontSize: 12)),
               ),
             ),
           ],

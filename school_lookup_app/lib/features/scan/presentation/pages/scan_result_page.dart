@@ -15,7 +15,7 @@ class ScanResultPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Data Science Analysis"),
+        title: const Text("Curriculum Evaluation"),
         backgroundColor: AppColors.primaryOrange,
         foregroundColor: Colors.white,
       ),
@@ -75,9 +75,9 @@ class ScanResultPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // 2. Data Science Analysis Result
+            // 2. Evaluation Result
             const Text(
-              "Data Science Matching",
+              "Topic Verification",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkTeal),
             ),
             const SizedBox(height: 12),
@@ -152,7 +152,7 @@ class ScanResultPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text("FINISH ANALYSIS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: const Text("FINISH EVALUATION", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -202,7 +202,7 @@ class ScanResultPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Text(
-                "Data Science Confidence: 98%",
+                "Verification Confidence: 98%",
                 style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
               ),
             ),
@@ -254,7 +254,7 @@ class ScanResultPage extends StatelessWidget {
       return _AnalysisResult(
         isMatched: false,
         matchedBook: "N/A",
-        message: "The Data Science analyzer could not find a strong correlation between the captured text and the predefined textbook dataset.",
+        message: "The analyzer could not find a strong correlation between the captured text and the predefined textbook dataset.",
       );
     }
   }

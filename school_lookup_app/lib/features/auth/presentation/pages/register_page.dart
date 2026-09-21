@@ -216,12 +216,18 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   }
 
   Widget _buildLoginLink() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         const Text("Already have an account?", style: TextStyle(fontSize: 13)),
         TextButton(
           onPressed: () => context.go('/login'),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           child: const Text("Login here", style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold, fontSize: 13)),
         ),
       ],

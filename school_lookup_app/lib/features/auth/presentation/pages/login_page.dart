@@ -187,21 +187,31 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildActionRow() {
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        SizedBox(
-          height: 24, width: 24,
-          child: Checkbox(
-            value: _rememberMe,
-            activeColor: AppColors.darkTeal,
-            onChanged: (v) => setState(() => _rememberMe = v!),
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 24, width: 24,
+              child: Checkbox(
+                value: _rememberMe,
+                activeColor: AppColors.darkTeal,
+                onChanged: (v) => setState(() => _rememberMe = v!),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text("Remember me", style: TextStyle(color: AppColors.darkTeal, fontWeight: FontWeight.w600, fontSize: 12)),
+          ],
         ),
-        const SizedBox(width: 8),
-        const Text("Remember me", style: TextStyle(color: AppColors.darkTeal, fontWeight: FontWeight.w600, fontSize: 12)),
-        const Spacer(),
         TextButton(
           onPressed: () => context.go('/forgot-password'),
+          style: TextButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.zero,
+          ),
           child: const Text("Forgot Password?", style: TextStyle(color: AppColors.darkTeal, fontSize: 12)),
         ),
       ],
@@ -221,12 +231,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildFooter() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         const Text("New to the platform?", style: TextStyle(fontSize: 13)),
         TextButton(
           onPressed: () => context.go('/register'),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           child: const Text("Register here", style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold, fontSize: 13)),
         ),
       ],
