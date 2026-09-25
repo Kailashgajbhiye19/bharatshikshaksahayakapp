@@ -4,13 +4,14 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/localization/app_localization.dart';
+import '../../../../core/util/ui_utils.dart';
 import '../providers/scan_provider.dart';
 import '../providers/qr_scan_service.dart';
 import './scan_preview_page.dart';
 import './scan_result_page.dart';
 
-/// [ScanCenterPage] provides various digitization tools for teachers.
-/// It supports OCR (Text Recognition) and QR Code scanning with live camera or gallery upload.
+/// [ScanCenterPage] provides digitization tools for teachers.
+/// Supports OCR (Text Recognition) and QR Code scanning.
 class ScanCenterPage extends ConsumerWidget {
   const ScanCenterPage({super.key});
 
@@ -106,26 +107,10 @@ class ScanCenterPage extends ConsumerWidget {
       } catch (e) {
         needsScan = false;
         if (context.mounted) {
-          _showErrorDialog(context, e.toString());
+          UIUtils.showErrorDialog(context, e);
         }
       }
     }
-  }
-
-  void _showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Action Required"),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
   }
 
   /// Triggers the QR code scanning and redirection flow.
@@ -136,11 +121,11 @@ class ScanCenterPage extends ConsumerWidget {
     try {
       final code = await ref.read(qrScanServiceProvider).scanQr(source: source);
       if (code != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('QR Code Detected: $code')));
+        UIUtils.showSuccessSnackBar(context, 'QR Code Detected: $code');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        UIUtils.showErrorDialog(context, e);
       }
     }
   }

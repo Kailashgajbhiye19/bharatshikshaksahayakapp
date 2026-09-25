@@ -3,6 +3,9 @@
 abstract class Failure {
   final String message;
   Failure(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class ServerFailure extends Failure {
@@ -19,4 +22,13 @@ class CacheFailure extends Failure {
 
 class AuthFailure extends Failure {
   AuthFailure(super.message);
+}
+
+class PermissionFailure extends Failure {
+  final bool isPermanentlyDenied;
+  PermissionFailure(super.message, {this.isPermanentlyDenied = false});
+}
+
+class StorageFailure extends Failure {
+  StorageFailure([String? message]) : super(message ?? "Insufficient storage or failed to save file.");
 }

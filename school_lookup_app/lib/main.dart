@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -22,23 +23,54 @@ import 'core/util/app_logger.dart';
 void main() async {
   // --- Global Error Handling for Production ---
   FlutterError.onError = (details) {
-    AppLogger.error("Flutter Error: ${details.exception}", details.exception, details.stack);
+    AppLogger.error("Flutter Framework Error: ${details.exception}", details.exception, details.stack);
+  };
+
+  // Catch unhandled async Dart errors to prevent unexpected crashes
+  PlatformDispatcher.instance.onError = (error, stack) {
+    AppLogger.error("Uncaught Async Error: $error", error, stack);
+    return true; // Prevents crash
   };
 
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   
-  try {
-    await Hive.initFlutter();
-    Hive.registerAdapter(ScanResultAdapter());
-    await Hive.openBox<ScanResult>(ScanRepository.boxName);
-    await Hive.openBox('settings');
-    AppLogger.info("Local storage initialized successfully.");
-  } catch (e) {
-    AppLogger.error("Local storage initialization failed.", e);
-  }
+  await _initLocalStorage();
 
   runApp(const ProviderScope(child: MyApp()));
+}
+
+Future<void> _initLocalStorage() async {
+  try {
+    await Hive.initFlutter();
+    
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(ScanResultAdapter());
+    }
+
+    // Safely open boxes with corruption recovery
+    await _openBoxSafely<ScanResult>(ScanRepository.boxName);
+    await _openBoxSafely('settings');
+    
+    AppLogger.info("Local storage initialized successfully.");
+  } catch (e, stack) {
+    AppLogger.error("Fatal local storage initialization failed", e, stack);
+  }
+}
+
+Future<void> _openBoxSafely<T>(String boxName) async {
+  try {
+    await Hive.openBox<T>(boxName);
+  } catch (e) {
+    AppLogger.warning("Corrupted box detected for $boxName, attempting recovery...");
+    try {
+      await Hive.deleteBoxFromDisk(boxName);
+      await Hive.openBox<T>(boxName);
+      AppLogger.info("Recovered box: $boxName");
+    } catch (recoveryError) {
+      AppLogger.error("Could not recover box $boxName", recoveryError);
+    }
+  }
 }
 
 class MyApp extends ConsumerWidget {

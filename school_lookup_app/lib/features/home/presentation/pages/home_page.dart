@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/localization/app_localization.dart';
+import '../../../../core/util/storage_utils.dart';
+import '../../../../core/util/ui_utils.dart';
 import '../../../../features/history/presentation/providers/history_provider.dart';
 import '../../../library/presentation/pages/library_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
@@ -584,10 +586,17 @@ class _AnalysisToolCardState extends State<_AnalysisToolCard> {
   XFile? _selectedImage;
 
   Future<void> _pickFromGallery() async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() => _selectedImage = image);
+    try {
+      await StorageUtils.checkAndRequestPermissions(requireCamera: false);
+      final picker = ImagePicker();
+      final image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() => _selectedImage = image);
+      }
+    } catch (e) {
+      if (mounted) {
+        UIUtils.showErrorDialog(context, e);
+      }
     }
   }
 
